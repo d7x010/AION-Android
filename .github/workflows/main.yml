@@ -26,10 +26,10 @@ jobs:
             echo "dir=." >> "$GITHUB_OUTPUT"
             echo "bootstrap=false" >> "$GITHUB_OUTPUT"
             echo "تم العثور على المشروع داخل المستودع."
-          elif [ -f AION-Mobile-V2.zip ]; then
+          elif [ -f AION-Mobile-V2-fixed.zip ]; then
             rm -rf .aion-bootstrap
             mkdir .aion-bootstrap
-            unzip -q AION-Mobile-V2.zip -d .aion-bootstrap
+            unzip -q AION-Mobile-V2-fixed.zip -d .aion-bootstrap
             test -f .aion-bootstrap/settings.gradle.kts
             test -f .aion-bootstrap/app/build.gradle.kts
             echo "dir=.aion-bootstrap" >> "$GITHUB_OUTPUT"
