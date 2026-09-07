@@ -1,0 +1,125 @@
+name: بناء AION Mobile V2
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: بناء وفحص AION APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: جلب المستودع
+        uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - name: تجهيز مشروع AION بإصدارات Android مستقرة
+        id: project
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f AION-Mobile-V2-FINAL.zip
+          rm -rf .aion-src
+          mkdir .aion-src
+          unzip -q AION-Mobile-V2-FINAL.zip -d .aion-src
+
+          test -f .aion-src/settings.gradle.kts
+          test -f .aion-src/build.gradle.kts
+          test -f .aion-src/app/build.gradle.kts
+
+          sed -i -E 's/compileSdk[[:space:]]*=[[:space:]]*[0-9.]+/compileSdk = 36/' .aion-src/app/build.gradle.kts
+          sed -i 's/androidx.compose:compose-bom:2026.08.00/androidx.compose:compose-bom:2025.08.00/' .aion-src/app/build.gradle.kts
+          sed -i 's/androidx.activity:activity-compose:1.13.0/androidx.activity:activity-compose:1.11.0/' .aion-src/app/build.gradle.kts
+          sed -i 's/androidx.lifecycle:lifecycle-runtime-ktx:2.10.0/androidx.lifecycle:lifecycle-runtime-ktx:2.9.4/' .aion-src/app/build.gradle.kts
+          sed -i 's/androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0/androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4/' .aion-src/app/build.gradle.kts
+
+          grep -q 'compileSdk = 36' .aion-src/app/build.gradle.kts
+          grep -q 'compose-bom:2025.08.00' .aion-src/app/build.gradle.kts
+          echo "dir=.aion-src" >> "$GITHUB_OUTPUT"
+
+      - name: إعداد Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: إعداد Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: تثبيت Android 16 وأدوات البناء
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: إعداد Gradle 9.6.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.1"
+
+      - name: التحقق من بيئة البناء
+        shell: bash
+        run: |
+          set -euo pipefail
+          java -version
+          gradle --version
+          test -d "$ANDROID_HOME/platforms/android-36"
+          test -x "$ANDROID_HOME/build-tools/36.0.0/apksigner"
+
+      - name: الاختبارات وLint وبناء APK
+        working-directory: ${{ steps.project.outputs.dir }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gradle :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --stacktrace --no-daemon
+
+      - name: التحقق من APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="${{ steps.project.outputs.dir }}/app/build/outputs/apk/debug/app-debug.apk"
+          test -f "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
+          cp "$APK" AION-Mobile-V2.apk
+          sha256sum AION-Mobile-V2.apk | tee AION-Mobile-V2.sha256
+
+      - name: رفع APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AION-Mobile-V2-APK
+          path: |
+            AION-Mobile-V2.apk
+            AION-Mobile-V2.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: تثبيت المصدر في المستودع بعد نجاح البناء فقط
+        shell: bash
+        run: |
+          set -euo pipefail
+          rsync -a \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude '.gradle' \
+            --exclude 'app/build' \
+            .aion-src/ ./
+
+          rm -rf .aion-src
+          rm -f AION-Mobile-V2.zip AION-Mobile-V2-fixed.zip AION-Mobile-V2-FINAL.zip
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "لا توجد تغييرات جديدة للحفظ."
+          else
+            git commit -m "تثبيت مشروع AION Mobile V2 بعد نجاح البناء"
+            git push origin HEAD:main
+          fi
