@@ -1,0 +1,52 @@
+name: بناء AION السريع
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: تجهيز المشروع
+        run: |
+          rm -rf aion
+          mkdir aion
+          unzip -q AION-Mobile-V2-FINAL.zip -d aion
+
+          sed -i -E 's/compileSdk[[:space:]]*=[[:space:]]*[0-9.]+/compileSdk = 36/' aion/app/build.gradle.kts
+          sed -i 's/androidx.compose:compose-bom:2026.08.00/androidx.compose:compose-bom:2025.08.00/' aion/app/build.gradle.kts
+          sed -i 's/androidx.activity:activity-compose:1.13.0/androidx.activity:activity-compose:1.11.0/' aion/app/build.gradle.kts
+          sed -i 's/androidx.lifecycle:lifecycle-runtime-ktx:2.10.0/androidx.lifecycle:lifecycle-runtime-ktx:2.9.4/' aion/app/build.gradle.kts
+          sed -i 's/androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0/androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4/' aion/app/build.gradle.kts
+          sed -i '/import androidx.compose.foundation.layout.weight/d' aion/app/src/main/java/com/aion/mobile/ui/AionApp.kt
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Android SDK
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.1"
+
+      - name: بناء APK
+        working-directory: aion
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
+
+      - name: تجهيز APK
+        run: cp aion/app/build/outputs/apk/debug/app-debug.apk AION-Mobile-V2.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AION-Mobile-V2-APK
+          path: AION-Mobile-V2.apk
