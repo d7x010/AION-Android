@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "AION-alpha6-Free-Cloud-fixed-20260908.zip"
+      - "AION-alpha6-Free-Cloud-glm47-20260908.zip"
       - ".github/workflows/aion-alpha6-release.yml"
   workflow_dispatch:
 
@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: استخراج α6
-        run: unzip -q AION-alpha6-Free-Cloud-fixed-20260908.zip -d .aion-alpha6
+        run: unzip -q AION-alpha6-Free-Cloud-glm47-20260908.zip -d .aion-alpha6
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - run: unzip -q AION-alpha6-Free-Cloud-fixed-20260908.zip -d .aion-alpha6
+      - run: unzip -q AION-alpha6-Free-Cloud-glm47-20260908.zip -d .aion-alpha6
       - name: نشر aion-core
         uses: cloudflare/wrangler-action@v3
         with:
