@@ -28,22 +28,22 @@ jobs:
         run: |
           yes | sdkmanager --licenses >/dev/null || true
           sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-          sed -i -E 's/compileSdk[[:space:]]*=[[:space:]]*[0-9.]+/compileSdk = 36/' .aion-alpha6/android/app/build.gradle.kts
-          sed -i 's/androidx.compose:compose-bom:2026.08.00/androidx.compose:compose-bom:2025.08.00/' .aion-alpha6/android/app/build.gradle.kts
-          sed -i 's/androidx.activity:activity-compose:1.13.0/androidx.activity:activity-compose:1.11.0/' .aion-alpha6/android/app/build.gradle.kts
-          sed -i 's/androidx.lifecycle:lifecycle-runtime-ktx:2.10.0/androidx.lifecycle:lifecycle-runtime-ktx:2.9.4/' .aion-alpha6/android/app/build.gradle.kts
-          sed -i 's/androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0/androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4/' .aion-alpha6/android/app/build.gradle.kts
+          sed -i -E 's/compileSdk[[:space:]]*=[[:space:]]*[0-9.]+/compileSdk = 36/' .aion-alpha6/app/build.gradle.kts
+          sed -i 's/androidx.compose:compose-bom:2026.08.00/androidx.compose:compose-bom:2025.08.00/' .aion-alpha6/app/build.gradle.kts
+          sed -i 's/androidx.activity:activity-compose:1.13.0/androidx.activity:activity-compose:1.11.0/' .aion-alpha6/app/build.gradle.kts
+          sed -i 's/androidx.lifecycle:lifecycle-runtime-ktx:2.10.0/androidx.lifecycle:lifecycle-runtime-ktx:2.9.4/' .aion-alpha6/app/build.gradle.kts
+          sed -i 's/androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0/androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4/' .aion-alpha6/app/build.gradle.kts
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "9.6.1"
       - name: اختبار وبناء APK
-        working-directory: .aion-alpha6/android
+        working-directory: .aion-alpha6
         run: gradle :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --stacktrace --no-daemon
       - name: رفع APK
         uses: actions/upload-artifact@v4
         with:
           name: AION-alpha6-Free-Cloud-APK
-          path: .aion-alpha6/android/app/build/outputs/apk/debug/app-debug.apk
+          path: .aion-alpha6/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
   deploy-cloud:
