@@ -1,5 +1,4 @@
-name: AION α6 Free Cloud Release
-
+name: AION α6.4 Continuum Release
 
 on:
   push:
@@ -9,24 +8,27 @@ on:
       - ".github/workflows/aion-alpha6-release.yml"
   workflow_dispatch:
 
-
 permissions:
   contents: read
-
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+
     steps:
       - uses: actions/checkout@v5
-      - name: استخراج α6
-                run: unzip -q AION-ALPHA64-CONTINUUM-UNIQUE.zip -d .aion-alpha6
+
+      - name: استخراج AION α6.4
+        run: unzip -q AION-ALPHA64-CONTINUUM-UNIQUE.zip -d .aion-alpha6
+
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
+
       - uses: android-actions/setup-android@v3
+
       - name: إعداد أدوات Android
         run: |
           yes | sdkmanager --licenses >/dev/null || true
@@ -37,30 +39,35 @@ jobs:
           sed -i 's/androidx.lifecycle:lifecycle-runtime-ktx:2.10.0/androidx.lifecycle:lifecycle-runtime-ktx:2.9.4/' .aion-alpha6/app/build.gradle.kts
           sed -i 's/androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0/androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4/' .aion-alpha6/app/build.gradle.kts
           sed -i 's/<item name="android:windowLayoutInDisplayCutoutMode">/<item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">/' .aion-alpha6/app/src/main/res/values/themes.xml
+
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "9.6.1"
+
       - name: اختبار وبناء APK
         working-directory: .aion-alpha6
         run: gradle :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --stacktrace --no-daemon
+
       - name: رفع APK
         uses: actions/upload-artifact@v4
         with:
-          name: AION-alpha6-Free-Cloud-APK
+          name: AION-alpha64-Continuum-APK
           path: .aion-alpha6/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
-
 
   deploy-cloud:
     needs: build-android
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v5
-      - run:  unzip -q AION-ALPHA64-CONTINUUM-UNIQUE.zip -d .aion-alpha6
+
+      - name: استخراج Worker
+        run: unzip -q AION-ALPHA64-CONTINUUM-UNIQUE.zip -d .aion-alpha6
+
       - name: نشر aion-core
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: .aion-alpha6/cloudflare/aion-core
-
