@@ -5,7 +5,6 @@ on:
     branches: [main]
     paths:
       - "AION-ALPHA73-STEP5-SOURCE.zip"
-      - ".github/workflows/aion-alpha73-step5-gate.yml"
   workflow_dispatch:
 
 permissions:
@@ -21,7 +20,7 @@ jobs:
       - name: جلب المستودع
         uses: actions/checkout@v5
 
-      - name: استخراج AION α7.3 dev6
+      - name: استخراج AION α7.3 dev7
         run: |
           set -euo pipefail
           test -f AION-ALPHA73-STEP5-SOURCE.zip
@@ -30,8 +29,8 @@ jobs:
           unzip -q AION-ALPHA73-STEP5-SOURCE.zip -d .aion-alpha73-step5
           test -f .aion-alpha73-step5/settings.gradle.kts
           test -f .aion-alpha73-step5/app/build.gradle.kts
-          grep -q 'versionCode = 20' .aion-alpha73-step5/app/build.gradle.kts
-          grep -q 'versionName = "2.0.0-alpha7.3-dev6"' .aion-alpha73-step5/app/build.gradle.kts
+          grep -q 'versionCode = 21' .aion-alpha73-step5/app/build.gradle.kts
+          grep -q 'versionName = "2.0.0-alpha7.3-dev7"' .aion-alpha73-step5/app/build.gradle.kts
 
       - name: إعداد Java 17
         uses: actions/setup-java@v5
@@ -69,15 +68,15 @@ jobs:
           APK=.aion-alpha73-step5/app/build/outputs/apk/debug/app-debug.apk
           test -f "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
-          cp "$APK" AION-alpha73-step5-dev6.apk
-          sha256sum AION-alpha73-step5-dev6.apk | tee AION-alpha73-step5-dev6.sha256
+          cp "$APK" AION-alpha73-step5-dev7.apk
+          sha256sum AION-alpha73-step5-dev7.apk | tee AION-alpha73-step5-dev7.sha256
 
       - name: رفع APK
         uses: actions/upload-artifact@v4
         with:
-          name: AION-alpha73-step5-dev6-APK
+          name: AION-alpha73-step5-dev7-APK
           path: |
-            AION-alpha73-step5-dev6.apk
-            AION-alpha73-step5-dev6.sha256
+            AION-alpha73-step5-dev7.apk
+            AION-alpha73-step5-dev7.sha256
           if-no-files-found: error
           retention-days: 30
