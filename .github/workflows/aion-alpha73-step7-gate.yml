@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  step7-points3-4:
-    name: Step 7.3 + 7.4 Context + Memory Retrieval + APK
+  step7-points5-6:
+    name: Step 7.5 + 7.6 Memory Privacy + Tool Router + APK
     runs-on: ubuntu-latest
     timeout-minutes: 40
 
@@ -20,7 +20,7 @@ jobs:
       - name: جلب المستودع
         uses: actions/checkout@v5
 
-      - name: استخراج AION α7.3 dev19
+      - name: استخراج AION α7.3 dev20
         shell: bash
         run: |
           set -euo pipefail
@@ -32,28 +32,28 @@ jobs:
           test -f .aion-alpha73-step7/app/build.gradle.kts
           test -f .aion-alpha73-step7/cloudflare/aion-core/src/index.js
           test -f .aion-alpha73-step7/cloudflare/aion-core/test-worker.mjs
-          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/context/AionContextEngine.kt
-          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/AionMemoryModels.kt
-          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/MemoryEnginePolicy.kt
-          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/AionMemoryStore.kt
-          test -f .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/context/AionContextEngineTest.kt
-          test -f .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/memory/MemoryEnginePolicyTest.kt
-          test -f .aion-alpha73-step7/AION_ALPHA73_STEP7_CONTEXT_MEMORY_RETRIEVAL_AR.md
-          test -f .aion-alpha73-step7/STEP7_POINTS3_4_LOCAL_STATUS_AR.md
-          grep -q 'versionCode = 33' .aion-alpha73-step7/app/build.gradle.kts
-          grep -q 'versionName = "2.0.0-alpha7.3-dev19"' .aion-alpha73-step7/app/build.gradle.kts
-          grep -q '7.3.0-dev19' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'CONTEXT_ENGINE_CONTRACT = 1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'MEMORY_RETRIEVAL_CONTRACT = 1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'budgeted-extractive-v1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'hybrid-lexical-scoped-v1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'memory-v1-retrieved-scoped' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'const val POLICY = "budgeted-extractive-v1"' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/context/AionContextEngine.kt
-          grep -q 'const val RETRIEVAL_POLICY = "hybrid-lexical-scoped-v1"' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/MemoryEnginePolicy.kt
-          grep -q 'queryText = latestUserText' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
-          grep -q 'contextContext = contextEnvelope.supplementalContext' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
-          grep -q 'retrievalNeverCrossesProjectOrConversationScope' .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/memory/MemoryEnginePolicyTest.kt
-          grep -q 'longConversationKeepsRecentTailAndBuildsExtractiveDigest' .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/context/AionContextEngineTest.kt
+          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/MemoryPrivacyPolicy.kt
+          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/MemoryPrivacyStore.kt
+          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/tools/ToolRegistry.kt
+          test -f .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/memory/MemoryPrivacyPolicyTest.kt
+          test -f .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/tools/ToolRegistryTest.kt
+          test -f .aion-alpha73-step7/AION_ALPHA73_STEP7_MEMORY_PRIVACY_TOOL_ROUTER_AR.md
+          test -f .aion-alpha73-step7/STEP7_POINTS5_6_LOCAL_STATUS_AR.md
+          grep -q 'versionCode = 34' .aion-alpha73-step7/app/build.gradle.kts
+          grep -q 'versionName = "2.0.0-alpha7.3-dev20"' .aion-alpha73-step7/app/build.gradle.kts
+          grep -q '7.3.0-dev20' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
+          grep -q 'TOOL_ROUTER_CONTRACT = 1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
+          grep -q 'universal-tool-router-v1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
+          grep -q 'route: "web.search"' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
+          grep -q 'typedFailures: true' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
+          grep -q 'const val POLICY = "user-controlled-memory-privacy-v1"' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/MemoryPrivacyPolicy.kt
+          grep -q 'ConversationMemoryMode.TEMPORARY' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/MemoryPrivacyPolicy.kt
+          grep -q 'allowedScopes = privacyDecision.allowedScopes' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
+          grep -q 'MemoryPrivacyStore.setTemporary' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
+          grep -q 'const val POLICY = "universal-tool-router-v1"' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/tools/ToolRegistry.kt
+          grep -q 'temporaryChatDisablesReadAndWrite' .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/memory/MemoryPrivacyPolicyTest.kt
+          grep -q 'acceptsKnownToolWithPermissionAndCapsTimeout' .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/tools/ToolRegistryTest.kt
+          ! grep -R -q 'legacy-web-search' .aion-alpha73-step7/app/src .aion-alpha73-step7/cloudflare/aion-core
 
       - name: إعداد Java 17
         uses: actions/setup-java@v5
@@ -76,7 +76,7 @@ jobs:
         with:
           gradle-version: "9.6.1"
 
-      - name: Worker regression + Step 7.3/7.4 context-memory tests
+      - name: Worker regression + Step 7.5/7.6 privacy-tool tests
         working-directory: .aion-alpha73-step7
         run: |
           node --check cloudflare/aion-core/src/index.js
@@ -94,15 +94,15 @@ jobs:
           APK=.aion-alpha73-step7/app/build/outputs/apk/debug/app-debug.apk
           test -f "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
-          cp "$APK" AION-alpha73-step7-dev19.apk
-          sha256sum AION-alpha73-step7-dev19.apk | tee AION-alpha73-step7-dev19.sha256
+          cp "$APK" AION-alpha73-step7-dev20.apk
+          sha256sum AION-alpha73-step7-dev20.apk | tee AION-alpha73-step7-dev20.sha256
 
       - name: رفع APK
         uses: actions/upload-artifact@v4
         with:
-          name: AION-alpha73-step7-dev19-APK
+          name: AION-alpha73-step7-dev20-APK
           path: |
-            AION-alpha73-step7-dev19.apk
-            AION-alpha73-step7-dev19.sha256
+            AION-alpha73-step7-dev20.apk
+            AION-alpha73-step7-dev20.sha256
           if-no-files-found: error
           retention-days: 30
