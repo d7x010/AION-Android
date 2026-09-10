@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  step7-point1:
-    name: Step 7.1 Orchestrator + APK
+  step7-point2:
+    name: Step 7.2 Memory Engine v1 + APK
     runs-on: ubuntu-latest
     timeout-minutes: 40
 
@@ -20,7 +20,7 @@ jobs:
       - name: جلب المستودع
         uses: actions/checkout@v5
 
-      - name: استخراج AION α7.3 dev17
+      - name: استخراج AION α7.3 dev18
         shell: bash
         run: |
           set -euo pipefail
@@ -33,16 +33,20 @@ jobs:
           test -f .aion-alpha73-step7/cloudflare/aion-core/src/index.js
           test -f .aion-alpha73-step7/cloudflare/aion-core/test-worker.mjs
           test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/orchestration/AionOrchestratorContract.kt
-          test -f .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/orchestration/AionOrchestratorContractTest.kt
-          test -f .aion-alpha73-step7/AION_ALPHA73_STEP7_INTELLIGENCE_CORE_AR.md
-          test -f .aion-alpha73-step7/STEP7_POINT1_LOCAL_STATUS_AR.md
-          grep -q 'versionCode = 31' .aion-alpha73-step7/app/build.gradle.kts
-          grep -q 'versionName = "2.0.0-alpha7.3-dev17"' .aion-alpha73-step7/app/build.gradle.kts
-          grep -q '7.3.0-dev17' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
+          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/AionMemoryModels.kt
+          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/MemoryEnginePolicy.kt
+          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/AionMemoryStore.kt
+          test -f .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/memory/MemoryEnginePolicyTest.kt
+          test -f .aion-alpha73-step7/AION_ALPHA73_STEP7_MEMORY_ENGINE_AR.md
+          test -f .aion-alpha73-step7/STEP7_POINT2_LOCAL_STATUS_AR.md
+          grep -q 'versionCode = 32' .aion-alpha73-step7/app/build.gradle.kts
+          grep -q 'versionName = "2.0.0-alpha7.3-dev18"' .aion-alpha73-step7/app/build.gradle.kts
+          grep -q '7.3.0-dev18' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
           grep -q 'ORCHESTRATOR_CONTRACT = 1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'aion-orchestrator-v1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'testStep7OrchestratorContract' .aion-alpha73-step7/cloudflare/aion-core/test-worker.mjs
-          grep -q 'await testStep7OrchestratorContract();' .aion-alpha73-step7/cloudflare/aion-core/test-worker.mjs
+          grep -q 'memory-v1-local-scoped' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
+          grep -q 'MemoryScope.CONVERSATION' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/MemoryEnginePolicy.kt
+          grep -q 'AtomicFile' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/AionMemoryStore.kt
+          grep -q 'slotReplacementResolvesKnownConflict' .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/memory/MemoryEnginePolicyTest.kt
           grep -q 'CURRENT_SCHEMA_VERSION = 5' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/storage/ChatSessionStore.kt
 
       - name: إعداد Java 17
@@ -66,7 +70,7 @@ jobs:
         with:
           gradle-version: "9.6.1"
 
-      - name: Worker regression + Step 7.1 Orchestrator tests
+      - name: Worker regression + Step 7.2 Memory tests
         working-directory: .aion-alpha73-step7
         run: |
           node --check cloudflare/aion-core/src/index.js
@@ -84,15 +88,15 @@ jobs:
           APK=.aion-alpha73-step7/app/build/outputs/apk/debug/app-debug.apk
           test -f "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
-          cp "$APK" AION-alpha73-step7-dev17.apk
-          sha256sum AION-alpha73-step7-dev17.apk | tee AION-alpha73-step7-dev17.sha256
+          cp "$APK" AION-alpha73-step7-dev18.apk
+          sha256sum AION-alpha73-step7-dev18.apk | tee AION-alpha73-step7-dev18.sha256
 
       - name: رفع APK
         uses: actions/upload-artifact@v4
         with:
-          name: AION-alpha73-step7-dev17-APK
+          name: AION-alpha73-step7-dev18-APK
           path: |
-            AION-alpha73-step7-dev17.apk
-            AION-alpha73-step7-dev17.sha256
+            AION-alpha73-step7-dev18.apk
+            AION-alpha73-step7-dev18.sha256
           if-no-files-found: error
           retention-days: 30
