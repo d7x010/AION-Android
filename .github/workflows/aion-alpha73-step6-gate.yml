@@ -20,7 +20,7 @@ jobs:
       - name: جلب المستودع
         uses: actions/checkout@v5
 
-      - name: استخراج AION α7.3 dev14
+      - name: استخراج AION α7.3 dev15
         run: |
           set -euo pipefail
           test -f AION-ALPHA73-STEP6-SOURCE.zip
@@ -29,11 +29,13 @@ jobs:
           unzip -q AION-ALPHA73-STEP6-SOURCE.zip -d .aion-alpha73-step6
           test -f .aion-alpha73-step6/settings.gradle.kts
           test -f .aion-alpha73-step6/app/build.gradle.kts
-          test -f .aion-alpha73-step6/app/src/main/java/com/aion/mobile/core/ai/ProviderRoutingPolicy.kt
-          grep -q 'versionCode = 28' .aion-alpha73-step6/app/build.gradle.kts
-          grep -q 'versionName = "2.0.0-alpha7.3-dev14"' .aion-alpha73-step6/app/build.gradle.kts
-          grep -q 'function routingContractStatus' .aion-alpha73-step6/cloudflare/aion-core/src/index.js
-          grep -q 'crossProviderFailover: false' .aion-alpha73-step6/cloudflare/aion-core/src/index.js
+          test -f .aion-alpha73-step6/STEP6_POINT6_LOCAL_STATUS_AR.md
+          grep -q 'versionCode = 29' .aion-alpha73-step6/app/build.gradle.kts
+          grep -q 'versionName = "2.0.0-alpha7.3-dev15"' .aion-alpha73-step6/app/build.gradle.kts
+          grep -q 'function providerNeutralConversation' .aion-alpha73-step6/cloudflare/aion-core/src/index.js
+          grep -q 'canonicalHistory: "provider-neutral"' .aion-alpha73-step6/cloudflare/aion-core/src/index.js
+          grep -q 'crossModelSwitching: true' .aion-alpha73-step6/cloudflare/aion-core/src/index.js
+          grep -q 'testCrossModelContextTranslationContract' .aion-alpha73-step6/cloudflare/aion-core/test-worker.mjs
 
       - name: إعداد Java 17
         uses: actions/setup-java@v5
@@ -56,7 +58,7 @@ jobs:
         with:
           gradle-version: "9.6.1"
 
-      - name: Worker regression + Step 6 routing tests
+      - name: Worker regression + Step 6 cross-model context tests
         working-directory: .aion-alpha73-step6
         run: node cloudflare/aion-core/test-worker.mjs
 
@@ -71,15 +73,15 @@ jobs:
           APK=.aion-alpha73-step6/app/build/outputs/apk/debug/app-debug.apk
           test -f "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
-          cp "$APK" AION-alpha73-step6-dev14.apk
-          sha256sum AION-alpha73-step6-dev14.apk | tee AION-alpha73-step6-dev14.sha256
+          cp "$APK" AION-alpha73-step6-dev15.apk
+          sha256sum AION-alpha73-step6-dev15.apk | tee AION-alpha73-step6-dev15.sha256
 
       - name: رفع APK
         uses: actions/upload-artifact@v4
         with:
-          name: AION-alpha73-step6-dev14-APK
+          name: AION-alpha73-step6-dev15-APK
           path: |
-            AION-alpha73-step6-dev14.apk
-            AION-alpha73-step6-dev14.sha256
+            AION-alpha73-step6-dev15.apk
+            AION-alpha73-step6-dev15.sha256
           if-no-files-found: error
           retention-days: 30
