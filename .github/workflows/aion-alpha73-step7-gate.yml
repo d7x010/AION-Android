@@ -20,7 +20,7 @@ jobs:
       - name: جلب المستودع
         uses: actions/checkout@v5
 
-      - name: استخراج AION α7.3 dev20
+      - name: استخراج AION α7.3 dev21
         shell: bash
         run: |
           set -euo pipefail
@@ -39,9 +39,9 @@ jobs:
           test -f .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/tools/ToolRegistryTest.kt
           test -f .aion-alpha73-step7/AION_ALPHA73_STEP7_MEMORY_PRIVACY_TOOL_ROUTER_AR.md
           test -f .aion-alpha73-step7/STEP7_POINTS5_6_LOCAL_STATUS_AR.md
-          grep -q 'versionCode = 34' .aion-alpha73-step7/app/build.gradle.kts
-          grep -q 'versionName = "2.0.0-alpha7.3-dev20"' .aion-alpha73-step7/app/build.gradle.kts
-          grep -q '7.3.0-dev20' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
+          grep -q 'versionCode = 35' .aion-alpha73-step7/app/build.gradle.kts
+          grep -q 'versionName = "2.0.0-alpha7.3-dev21"' .aion-alpha73-step7/app/build.gradle.kts
+          grep -q '7.3.0-dev21' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
           grep -q 'TOOL_ROUTER_CONTRACT = 1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
           grep -q 'universal-tool-router-v1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
           grep -q 'route: "web.search"' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
@@ -50,6 +50,8 @@ jobs:
           grep -q 'ConversationMemoryMode.TEMPORARY' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/memory/MemoryPrivacyPolicy.kt
           grep -q 'allowedScopes = privacyDecision.allowedScopes' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
           grep -q 'MemoryPrivacyStore.setTemporary' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
+          grep -q 'fun setConversationTemporaryMemory(temporary: Boolean)' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
+          ! grep -q 'fun setTemporaryConversation(temporary: Boolean)' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
           grep -q 'const val POLICY = "universal-tool-router-v1"' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/tools/ToolRegistry.kt
           grep -q 'temporaryChatDisablesReadAndWrite' .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/memory/MemoryPrivacyPolicyTest.kt
           grep -q 'acceptsKnownToolWithPermissionAndCapsTimeout' .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/tools/ToolRegistryTest.kt
@@ -94,15 +96,15 @@ jobs:
           APK=.aion-alpha73-step7/app/build/outputs/apk/debug/app-debug.apk
           test -f "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
-          cp "$APK" AION-alpha73-step7-dev20.apk
-          sha256sum AION-alpha73-step7-dev20.apk | tee AION-alpha73-step7-dev20.sha256
+          cp "$APK" AION-alpha73-step7-dev21.apk
+          sha256sum AION-alpha73-step7-dev21.apk | tee AION-alpha73-step7-dev21.sha256
 
       - name: رفع APK
         uses: actions/upload-artifact@v4
         with:
-          name: AION-alpha73-step7-dev20-APK
+          name: AION-alpha73-step7-dev21-APK
           path: |
-            AION-alpha73-step7-dev20.apk
-            AION-alpha73-step7-dev20.sha256
+            AION-alpha73-step7-dev21.apk
+            AION-alpha73-step7-dev21.sha256
           if-no-files-found: error
           retention-days: 30
