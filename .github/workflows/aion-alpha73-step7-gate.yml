@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  step7-points7-8:
-    name: Step 7.7 + 7.8 Search + Calculator + Tool Loop + APK
+  step7-points9-10:
+    name: Step 7.9 + 7.10 Files + Safe Sandbox + Response v2 + APK
     runs-on: ubuntu-latest
     timeout-minutes: 40
 
@@ -20,7 +20,7 @@ jobs:
       - name: جلب المستودع
         uses: actions/checkout@v5
 
-      - name: استخراج AION α7.3 dev22
+      - name: استخراج AION α7.3 dev23
         shell: bash
         run: |
           set -euo pipefail
@@ -28,33 +28,66 @@ jobs:
           rm -rf .aion-alpha73-step7
           mkdir .aion-alpha73-step7
           unzip -q AION-ALPHA73-STEP7-SOURCE.zip -d .aion-alpha73-step7
-          test -f .aion-alpha73-step7/settings.gradle.kts
-          test -f .aion-alpha73-step7/app/build.gradle.kts
-          test -f .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          test -f .aion-alpha73-step7/cloudflare/aion-core/test-worker.mjs
-          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/tools/ToolRegistry.kt
-          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/tools/DeterministicCalculator.kt
-          test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/tools/ToolLoopPolicy.kt
-          test -f .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/tools/DeterministicCalculatorTest.kt
-          test -f .aion-alpha73-step7/app/src/test/java/com/aion/mobile/core/tools/ToolLoopPolicyTest.kt
-          test -f .aion-alpha73-step7/AION_ALPHA73_STEP7_SEARCH_TOOL_LOOP_AR.md
-          test -f .aion-alpha73-step7/STEP7_POINTS7_8_LOCAL_STATUS_AR.md
-          grep -q 'versionCode = 36' .aion-alpha73-step7/app/build.gradle.kts
-          grep -q 'versionName = "2.0.0-alpha7.3-dev22"' .aion-alpha73-step7/app/build.gradle.kts
-          grep -q '7.3.0-dev22' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'SEARCH_INTELLIGENCE_CONTRACT = 1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'TOOL_LOOP_CONTRACT = 1' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'MAX_TOOL_STEPS = 4' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'deterministic-calculator-v1' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/tools/DeterministicCalculator.kt
-          grep -q 'bounded-multi-step-tool-loop-v1' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/tools/ToolLoopPolicy.kt
-          grep -q 'registry: \["calculator", "web.search"\]' .aion-alpha73-step7/cloudflare/aion-core/src/index.js
-          grep -q 'route = "multi-step"\|"multi-step"' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/orchestration/AionOrchestratorContract.kt
-          grep -q 'fun setConversationTemporaryMemory(temporary: Boolean)' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
-          ! grep -q 'fun setTemporaryConversation(temporary: Boolean)' .aion-alpha73-step7/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt
-          ! test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/tools/SafeCodeSandboxPolicy.kt
-          ! test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/response/AionResponsePolicy.kt
-          ! test -f .aion-alpha73-step7/app/src/main/java/com/aion/mobile/core/files/FileToolPolicy.kt
-          ! grep -R -q 'legacy-web-search' .aion-alpha73-step7/app/src .aion-alpha73-step7/cloudflare/aion-core
+          ROOT=.aion-alpha73-step7
+          test -f "$ROOT/settings.gradle.kts"
+          test -f "$ROOT/app/build.gradle.kts"
+          test -f "$ROOT/cloudflare/aion-core/src/index.js"
+          test -f "$ROOT/cloudflare/aion-core/test-worker.mjs"
+          test -f "$ROOT/cloudflare/aion-sandbox/package.json"
+          test -f "$ROOT/cloudflare/aion-sandbox/wrangler.jsonc"
+          test -f "$ROOT/cloudflare/aion-sandbox/Dockerfile"
+          test -f "$ROOT/cloudflare/aion-sandbox/src/index.js"
+          test -f "$ROOT/cloudflare/aion-sandbox/src/policy.js"
+          test -f "$ROOT/cloudflare/aion-sandbox/test-policy.mjs"
+          test -f "$ROOT/app/src/main/java/com/aion/mobile/core/tools/FileToolPolicy.kt"
+          test -f "$ROOT/app/src/main/java/com/aion/mobile/core/tools/SafeCodeSandboxPolicy.kt"
+          test -f "$ROOT/app/src/main/java/com/aion/mobile/core/orchestration/ResponseIntelligencePolicy.kt"
+          test -f "$ROOT/app/src/test/java/com/aion/mobile/core/tools/FileToolPolicyTest.kt"
+          test -f "$ROOT/app/src/test/java/com/aion/mobile/core/tools/SafeCodeSandboxPolicyTest.kt"
+          test -f "$ROOT/app/src/test/java/com/aion/mobile/core/orchestration/ResponseIntelligencePolicyTest.kt"
+          test -f "$ROOT/AION_ALPHA73_STEP7_FILES_SANDBOX_RESPONSE_AR.md"
+          test -f "$ROOT/STEP7_POINTS9_10_LOCAL_STATUS_AR.md"
+          grep -q 'versionCode = 37' "$ROOT/app/build.gradle.kts"
+          grep -q 'versionName = "2.0.0-alpha7.3-dev23"' "$ROOT/app/build.gradle.kts"
+          grep -q '7.3.0-dev23' "$ROOT/cloudflare/aion-core/src/index.js"
+          grep -q 'FILE_TOOL_CONTRACT = 1' "$ROOT/cloudflare/aion-core/src/index.js"
+          grep -q 'CODE_SANDBOX_CONTRACT = 1' "$ROOT/cloudflare/aion-core/src/index.js"
+          grep -q 'RESPONSE_POLICY_CONTRACT = 2' "$ROOT/cloudflare/aion-core/src/index.js"
+          grep -q 'registry: \["calculator", "web.search", "files.read", "code.execute"\]' "$ROOT/cloudflare/aion-core/src/index.js"
+          grep -q 'remote-isolated-fail-closed-v1' "$ROOT/cloudflare/aion-core/src/index.js"
+          grep -q 'response-intelligence-v2' "$ROOT/cloudflare/aion-core/src/index.js"
+          grep -q 'inputsInTrace: false' "$ROOT/cloudflare/aion-core/src/index.js"
+          grep -q 'fun allowsLocalExecution(): Boolean = false' "$ROOT/app/src/main/java/com/aion/mobile/core/tools/SafeCodeSandboxPolicy.kt"
+          grep -q 'files.read' "$ROOT/app/src/main/java/com/aion/mobile/core/orchestration/AionOrchestratorContract.kt"
+          grep -q 'code.execute' "$ROOT/app/src/main/java/com/aion/mobile/core/orchestration/AionOrchestratorContract.kt"
+          grep -q 'fun setConversationTemporaryMemory(temporary: Boolean)' "$ROOT/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt"
+          ! grep -q 'fun setTemporaryConversation(temporary: Boolean)' "$ROOT/app/src/main/java/com/aion/mobile/feature/chat/ChatViewModel.kt"
+          ! grep -R -q 'legacy-web-search' "$ROOT/app/src" "$ROOT/cloudflare/aion-core"
+          ! grep -R -E -q '\beval[[:space:]]*\(|child_process|Runtime\.getRuntime|ProcessBuilder|/bin/(sh|bash)|bash[[:space:]]+-c' "$ROOT/app/src/main" "$ROOT/cloudflare/aion-core/src"
+          ! grep -R -E -q '(sk-[A-Za-z0-9_-]{20,}|AIza[0-9A-Za-z_-]{20,}|ghp_[0-9A-Za-z]{20,}|AKIA[0-9A-Z]{16})' "$ROOT/app/src/main" "$ROOT/cloudflare/aion-core/src" "$ROOT/cloudflare/aion-core/wrangler.toml"
+
+      - name: إعداد Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Safe Sandbox package + Wrangler dry-run
+        working-directory: .aion-alpha73-step7/cloudflare/aion-sandbox
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f package.json
+          test -f wrangler.jsonc
+          test -f Dockerfile
+          test -f src/index.js
+          test -f src/policy.js
+          npm install --no-audit --no-fund
+          npm run check
+          rm -rf dist
+          npx wrangler deploy --dry-run --outdir dist
+          test -d dist
+          grep -q 'enableInternet = false' src/index.js
+          ! grep -R -E -q '\beval[[:space:]]*\(|child_process|Runtime\.getRuntime|ProcessBuilder|/bin/(sh|bash)|bash[[:space:]]+-c' src
 
       - name: إعداد Java 17
         uses: actions/setup-java@v5
@@ -77,7 +110,7 @@ jobs:
         with:
           gradle-version: "9.6.1"
 
-      - name: Worker regression + Step 7.7/7.8 search-calculator-loop tests
+      - name: Worker regression + Step 7.9/7.10 files-sandbox-response tests
         working-directory: .aion-alpha73-step7
         run: |
           node --check cloudflare/aion-core/src/index.js
@@ -95,15 +128,15 @@ jobs:
           APK=.aion-alpha73-step7/app/build/outputs/apk/debug/app-debug.apk
           test -f "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
-          cp "$APK" AION-alpha73-step7-dev22.apk
-          sha256sum AION-alpha73-step7-dev22.apk | tee AION-alpha73-step7-dev22.sha256
+          cp "$APK" AION-alpha73-step7-dev23.apk
+          sha256sum AION-alpha73-step7-dev23.apk | tee AION-alpha73-step7-dev23.sha256
 
       - name: رفع APK
         uses: actions/upload-artifact@v4
         with:
-          name: AION-alpha73-step7-dev22-APK
+          name: AION-alpha73-step7-dev23-APK
           path: |
-            AION-alpha73-step7-dev22.apk
-            AION-alpha73-step7-dev22.sha256
+            AION-alpha73-step7-dev23.apk
+            AION-alpha73-step7-dev23.sha256
           if-no-files-found: error
           retention-days: 30
