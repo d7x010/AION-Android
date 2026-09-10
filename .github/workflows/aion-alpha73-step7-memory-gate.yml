@@ -1,0 +1,59 @@
+name: AION α7.3 Step 7 Memory Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "AION-ALPHA73-STEP7-MEMORY-SOURCE.zip"
+      - ".github/workflows/aion-alpha73-step7-memory-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: Unit + Lint + APK + Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v5
+      - name: Extract current source
+        run: |
+          set -euo pipefail
+          unzip -q AION-ALPHA73-STEP7-MEMORY-SOURCE.zip -d .aion
+          test -f .aion/settings.gradle.kts
+          grep -q 'versionCode = 38' .aion/app/build.gradle.kts
+          grep -q 'versionName = "2.0.0-alpha7.3-dev24"' .aion/app/build.gradle.kts
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - name: Setup Android SDK
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.6.1"
+      - name: Worker regression
+        working-directory: .aion
+        run: node --check cloudflare/aion-core/src/index.js && node cloudflare/aion-core/test-worker.mjs
+      - name: Android regression
+        working-directory: .aion
+        run: gradle :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --stacktrace --no-daemon
+      - name: Verify and upload APK
+        run: |
+          set -euo pipefail
+          APK=.aion/app/build/outputs/apk/debug/app-debug.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK"
+          cp "$APK" AION-alpha73-dev24.apk
+          sha256sum AION-alpha73-dev24.apk | tee AION-alpha73-dev24.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AION-alpha73-dev24-APK
+          path: |
+            AION-alpha73-dev24.apk
+            AION-alpha73-dev24.sha256
+          retention-days: 30
