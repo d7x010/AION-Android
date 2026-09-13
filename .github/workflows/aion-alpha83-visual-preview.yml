@@ -54,7 +54,9 @@ jobs:
       - name: Accept Android SDK licenses and install packages
         shell: bash
         run: |
-          yes | sdkmanager --licenses >/dev/null
+          # sdkmanager exits after consuming enough input; with pipefail, `yes`
+          # then reports SIGPIPE despite the licenses having been accepted.
+          yes | sdkmanager --licenses >/dev/null || true
           sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
       - name: Verify source version gate
@@ -72,6 +74,7 @@ jobs:
       - name: Rename and verify artifacts
         shell: bash
         run: |
+          export PATH="${ANDROID_SDK_ROOT}/build-tools/36.0.0:${PATH}"
           mkdir -p release-artifacts
           cp "${AION_DIR}/app/build/outputs/apk/debug/app-debug.apk" release-artifacts/AION-alpha83-visual-preview-dev1.apk
           cp "${AION_DIR}/app/build/outputs/bundle/release/app-release.aab" release-artifacts/AION-alpha83-visual-preview-dev1.aab
