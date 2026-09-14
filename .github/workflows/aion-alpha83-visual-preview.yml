@@ -14,7 +14,7 @@ permissions:
 
 env:
   SOURCE_ZIP: AION-ALPHA83-VISUAL-PREVIEW-DEV1-SOURCE.zip
-  SOURCE_SHA256: d0a4625ffed17a4130daa58fe4d0fa22764499a6da0d1de3a4187a56793b1e54
+  SOURCE_SHA256: ea8dd9d3ac3a9b85e4ae0c08be7ec591cb3ed7dda80f8c083bcd8541c625ece7
 
 jobs:
   build-verify:
