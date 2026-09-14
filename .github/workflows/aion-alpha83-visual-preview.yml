@@ -14,7 +14,7 @@ permissions:
 
 env:
   SOURCE_ZIP: AION-ALPHA83-VISUAL-PREVIEW-DEV1-SOURCE.zip
-  SOURCE_SHA256: 995f1d997e52f6a6c13383035c24e12e28d4e854fab1857e9f2aa620f7b3a524
+  SOURCE_SHA256: 022e7d5c0a1217e085604d47b1e5690f1c994ae9ca524cc07655af35e8bf7296
 
 jobs:
   build-verify:
@@ -74,7 +74,6 @@ jobs:
       - name: Rename and verify artifacts
         shell: bash
         run: |
-          export PATH="${ANDROID_SDK_ROOT}/build-tools/36.0.0:${PATH}"
           mkdir -p release-artifacts
           cp "${AION_DIR}/app/build/outputs/apk/debug/app-debug.apk" release-artifacts/AION-alpha83-visual-preview-dev1.apk
           cp "${AION_DIR}/app/build/outputs/bundle/release/app-release.aab" release-artifacts/AION-alpha83-visual-preview-dev1.aab
