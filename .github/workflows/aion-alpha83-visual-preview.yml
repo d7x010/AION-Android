@@ -74,6 +74,7 @@ jobs:
       - name: Rename and verify artifacts
         shell: bash
         run: |
+          export PATH="${ANDROID_SDK_ROOT}/build-tools/36.0.0:${PATH}"
           mkdir -p release-artifacts
           cp "${AION_DIR}/app/build/outputs/apk/debug/app-debug.apk" release-artifacts/AION-alpha83-visual-preview-dev1.apk
           cp "${AION_DIR}/app/build/outputs/bundle/release/app-release.aab" release-artifacts/AION-alpha83-visual-preview-dev1.aab
